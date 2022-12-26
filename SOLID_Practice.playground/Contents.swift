@@ -218,6 +218,7 @@ printArea(of: square)
 /* Square class is trying to play around with it's parent class Rectangle's properties whereas according to Liskov Substitution it's not allowed so we made a new protocol that handles the area and left calculation is handled by each class individually.
  */
 
+// Example 3.1 Liskov Substitution
 protocol Polygon {
     var area: Double { get }
 }
@@ -257,3 +258,135 @@ printArea(of: rectO)
 
 let squareO = Square_SOLID(side: 40.0)
 printArea(of: squareO)
+
+// MARK :-
+
+// Interface Segregation Principle
+
+// Many client-specific abstractions (interfaces) are better than one general-purpose interface.
+
+protocol LargeGeneralPurposeAbstarction {
+    func didTap()
+    func didLongPress()
+    func didSwipe()
+}
+
+// Example 4.1 Non Interface Segregation
+
+class Rich_Button_NOT_SOLID: LargeGeneralPurposeAbstarction {
+    func didTap() {
+        print("didTap")
+    }
+    
+    func didLongPress() {
+        print("didLongPress")
+    }
+    
+    func didSwipe() {
+        print("didSwipe")
+    }
+}
+
+
+class Poor_Button_NOT_SOLID: LargeGeneralPurposeAbstarction {
+    func didTap() {
+        print("didTap")
+    }
+    
+    func didLongPress() {
+        // not used
+    }
+    
+    func didSwipe() {
+        // not used
+    }
+}
+
+// Example 4.2 Interface Segregation Principle
+
+/* In Example 4.1, we made one FAT protocol that has everything at one place whereas in Rich Button you have more functionalities than in Poor Button were we have limited functionalities to play around with, therefore we made requirement specific protocols in Example 4.2 */
+
+protocol TapGesture {
+    func didTap()
+}
+
+protocol LongPressGesture {
+    func didLongPress()
+}
+
+protocol SwipeGesture {
+    func didSwipe()
+}
+
+class Rich_Button_SOLID: TapGesture, LongPressGesture, SwipeGesture {
+    func didTap() {
+        print("didTap")
+    }
+    
+    func didLongPress() {
+        print("didLongPress")
+    }
+    
+    func didSwipe() {
+        print("didSwipe")
+    }
+}
+
+class Poor_Button_SOLID: TapGesture {
+    func didTap() {
+        print("didTap")
+    }
+}
+
+// MARK :-
+
+// Dependency Inversion Principle
+
+// High level modules should not depend on low level modules. Both should depend on abstractions
+
+// Example 5.1 Non Dependency Inversion
+
+class SaveData_NOT_SOLID {
+    let fileSystem = FileSystemManager_NOT_SOLID()
+    
+    func handle(data: String) {
+        fileSystem.save(file: data)
+    }
+}
+
+class FileSystemManager_NOT_SOLID {
+    func save(file: String) {
+        // save data
+    }
+}
+
+// Example 5.2 Dependency Inversion
+/*
+ In Example 5.1 SaveData Class is completely dependent on FileSystemManager which makes former non reusuable. In Example 5.2 if we want to play around with the way we save Data or If we want to use any DataBase Technology so we defined Storage protocol & made every single peace independent.
+ */
+
+// Example 5.2 Dependency Inversion
+
+protocol Storage {
+    func save(file: String)
+}
+
+class SaveData_SOLID {
+    let storage: Storage
+    
+    init(storage: Storage) {
+        self.storage = storage
+    }
+}
+
+class FileSystemManager_SOLID: Storage {
+    func save(file: String) {
+        // save data
+    }
+}
+
+class MySQLDataBase: Storage {
+    func save(file: String) {
+        // save data
+    }
+}
