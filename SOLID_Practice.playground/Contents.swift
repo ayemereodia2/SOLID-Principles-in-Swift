@@ -176,3 +176,84 @@ class Bus_SOLID:Printable {
         "bus type: \(type)"
     }
 }
+
+// MARK :-
+
+// Liskov Substitution Principle
+// Objects in a program should be replaceable with instances of their sub types without altering the correctness of the program
+
+//  Example 3.0 Non Liskov Substitution
+
+class Rectangle_NON_SOLID {
+    var width: Double = 0.0
+    var height: Double = 0.0
+    
+    var area: Double {
+        width * height
+    }
+}
+
+class Square_NON_SOLID: Rectangle_NON_SOLID {
+    //Square class is trying to play around with it's parent class Rectangle's properties
+    override var width: Double {
+        didSet {
+            height = width
+        }
+    }
+}
+
+func printArea(of rectangle: Rectangle_NON_SOLID) {
+    rectangle.width = 40.0
+    rectangle.height = 10.0
+    
+    print(rectangle.area)
+}
+
+let rect = Rectangle_NON_SOLID()
+printArea(of: rect)
+
+let square = Square_NON_SOLID()
+printArea(of: square)
+
+/* Square class is trying to play around with it's parent class Rectangle's properties whereas according to Liskov Substitution it's not allowed so we made a new protocol that handles the area and left calculation is handled by each class individually.
+ */
+
+protocol Polygon {
+    var area: Double { get }
+}
+
+class Rectangle_SOLID: Polygon {
+    var width: Double
+    var height: Double
+    
+    init(width: Double, height: Double) {
+        self.width = width
+        self.height = height
+    }
+    
+    var area: Double {
+        return width * height
+    }
+}
+
+class Square_SOLID: Polygon {
+    var sides: Double
+    
+    init(side: Double) {
+        self.sides = side
+    }
+    
+    var area: Double {
+        return pow(sides, 2)
+    }
+}
+
+func printArea(of polygon: Polygon) {
+    print(polygon.area)
+}
+
+let rectO = Rectangle_SOLID(width: 40.0, height: 10.0)
+printArea(of: rectO)
+
+let squareO = Square_SOLID(side: 40.0)
+printArea(of: squareO)
