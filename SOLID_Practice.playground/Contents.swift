@@ -390,3 +390,7 @@ class MySQLDataBase: Storage {
         // save data
     }
 }
+
+var numbers = [3, 7, 9]
+numbers.removeFirst()
+print(numbers)
